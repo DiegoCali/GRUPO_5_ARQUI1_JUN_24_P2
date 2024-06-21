@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from fronted.views import home  # Asegúrate de que esta línea sea correcta
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home, name='home'),  # Asegúrate de usar `name='home'` si quieres referenciar esta URL en otras partes de tu código
 ]
