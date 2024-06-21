@@ -353,48 +353,30 @@
                 <div class="col-md-6 mb-4">
                   <label for="select2Multiple" class="form-label">Filtro</label>
                   <select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
-                    <option value="Temperatura">Temperatura</option>
-                    <option value="Humedad">Humedad</option>
-                    <option value="VelocidadViento">Velocidad Viento</option>
-                    <option value="PresionBarometrica">Presion barometrica</option>
-                  </optgroup>
-                  <optgroup label="Otros">
-                    <option value="CalidadAire">Calidad de aire</option>
-                  </optgroup>
-                  </select>
+                    <optgroup label="Mediciones">
+                        <option value="Temperatura">Temperatura</option>
+                        <option value="Humedad">Humedad</option>
+                        <option value="VelocidadViento">Velocidad Viento</option>
+                        <option value="PresionBarometrica">Presion barometrica</option>
+                    </optgroup>
+                    <optgroup label="Otros">
+                        <option value="CalidadAire">Calidad de aire</option>
+                    </optgroup>
+                </select>
                   
                 </div>
 
-                <div  id="tableTemperature"> 
-                <h3>Temperatura</h3>
-                <table  class="table table-striped" style="width:100%">
-                  <thead>
-                      <tr>
-                          <th>Promedio</th>
-                          <th>Mediana</th>
-                          <th>Desviacion estandar</th>
-                          <th>Maximo</th>
-                          <th>Minimo</th>
-                          <th>Moda</th>
-                          <th>Contador</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                          <td>25</td>
-                          <td>3</td>
-                          <td>52</td>
-                          <td>61</td>
-                          <td>25</td>
-                          <td>320</td>
-                          <td>25</td>
-                      </tr>
-                   
-                      
-                  </tbody>
-
-              </table>
-            </div>
+                <div id="tableContainer">
+                  <h3 id="tableTitle">Temperatura</h3>
+                  <table id="dataTable" class="table table-striped" style="width:100%">
+                      <thead id="dataHead">
+                          <!-- Encabezados dinámicos se agregarán aquí -->
+                      </thead>
+                      <tbody id="dataBody">
+                          <!-- Datos dinámicos se agregarán aquí -->
+                      </tbody>
+                  </table>
+              </div>
       
     </div>
                 
@@ -484,10 +466,59 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    
+    <script>
+      $(document).ready(function() {
+          // Evento cuando cambia la selección en el select
+          $('#select2Basic').change(function() {
+              var selectedOption = $(this).val();  // Obtener el valor seleccionado
+              
+              // Actualizar el título de la tabla según la selección
+              $('#tableTitle').text(selectedOption);
+              
+              // Hacer una llamada AJAX para obtener los datos desde Django views.py
+              $.ajax({
+                  url: '/obtener_datos/',  //  URL  en Django
+                  type: 'GET',
+                  data: {
+                      'option': selectedOption  
+                  },
+                  success: function(response) {
+                      // Limpia el cuerpo y encabezados de la tabla
+                      $('#dataHead').empty();
+                      $('#dataBody').empty();
+                      
+                      // Inserta los encabezados según la opción seleccionada
+                      var headers = response.headers;
+                      var headerRow = '<tr>';
+                      $.each(headers, function(index, header) {
+                          headerRow += '<th>' + header + '</th>';
+                      });
+                      headerRow += '</tr>';
+                      $('#dataHead').append(headerRow);
+                      
+                      // Inserta los datos obtenidos en el cuerpo de la tabla
+                      $.each(response.data, function(index, item) {
+                          var row = '<tr>';
+                          $.each(headers, function(index, header) {
+                              row += '<td>' + item[header.toLowerCase().replace(/\s+/g, '')] + '</td>';
+                          });
+                          row += '</tr>';
+                          $('#dataBody').append(row);
+                      });
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Error al obtener datos:', error);
+                  }
+              });
+          });
+          
+          // Disparar el evento change inicialmente para cargar los datos de 'Temperatura'
+          $('#select2Basic').trigger('change');
+      });
+  </script>
   </body>
 </html>
