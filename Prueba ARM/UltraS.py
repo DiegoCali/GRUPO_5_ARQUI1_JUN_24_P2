@@ -10,3 +10,7 @@ total = 0
 for num in array:
     total = sum_asm(total, num)
 print(f'La suma es: {total}')
+
+def Square_Root(num):
+    result = subprocess.run(['../Analysis of  data (ARM)/SquareRoot'], input=f'{num}\n', text=True, capture_output=True)
+    return result.stdout
