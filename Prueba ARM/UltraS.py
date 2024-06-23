@@ -11,6 +11,6 @@ for num in array:
     total = sum_asm(total, num)
 print(f'La suma es: {total}')
 
-def Square_Root(num):
+def Desviacion_estandar(num): #el num solamente puede ser un entero y como maximo de 3 digitos
     result = subprocess.run(['../Analysis of  data (ARM)/SquareRoot'], input=f'{num}\n', text=True, capture_output=True)
-    return result.stdout
+    return float(result.stdout)
