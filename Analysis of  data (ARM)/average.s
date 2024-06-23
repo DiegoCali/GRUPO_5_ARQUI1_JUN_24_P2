@@ -35,7 +35,9 @@ _start:
 
     ldr x1, =buffer     // buffer address
     mov x3, 0           // number size = 0
-    mov x4, 10          // base number                
+    mov x4, 10          // base number 
+    mov x5, 0           // sum
+    mov x6, 0           // counter               
 
     // loop
 loop:
