@@ -10,28 +10,23 @@ def home(request):
 def obtener_datos(request):
     opcion = request.GET.get('option', '')  # Obtener el valor del parámetro 'option'
     
-    
-    if opcion == 'Temperatura':
-        headers = ['Promedio', 'Mediana', 'Desviacion estandar', 'Maximo', 'Minimo', 'Moda', 'Contador']
+    response = requests.get(f'http://127.0.0.1:5000/{opcion}').json()
+
+    if opcion == 'CalidadAire':
+        headers = ['Contador_bueno', 'Contador_Malo']
         datos = {
             'headers': headers,
             'data': [
-                {'promedio': 25, 'mediana': 3, 'desviacion_estandar': 52, 'maximo': 61, 'minimo': 25, 'moda': 320, 'contador': 25},
-                
-            ]
-        }
-    elif opcion == 'Humedad':
-        headers = ['Encabezado1', 'Encabezado2', 'Encabezado3', 'Encabezado4', 'Encabezado5']
-        datos = {
-            'headers': headers,
-            'data': [
-                # Datos para Humedad
+                response,
             ]
         }
     else:
+        headers = ['Promedio', 'Mediana', 'Desviacion_Estandar', 'Maximo', 'Minimo', 'Moda', 'Contador']
         datos = {
-            'headers': [],
-            'data': []  # Si la opción no coincide con ninguna, devolver datos y encabezados vacíos
+            'headers': headers,
+            'data': [
+                response,
+            ] 
         }
     
     return JsonResponse(datos)
