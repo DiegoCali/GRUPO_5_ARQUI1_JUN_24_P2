@@ -68,7 +68,7 @@ class Climate:
                 self.air_velocity = self.bus.read_byte(pcf8581)
             except:
                 self.air_velocity = self.air_velocity
-            sleep(1)
+            sleep(10)
 
     def read_climate(self):
         th1 = threading.Thread(target=self.read_sensor, args=())
