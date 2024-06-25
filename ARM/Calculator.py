@@ -62,8 +62,11 @@ class Calculator:
     def get_stnd_dev(self, variable):
         sqaverage = sp.run(['./ARM/sqaverage', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
         average = sp.run(['./ARM/average', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
-        variance = int(sqaverage) - int(average)**2
-        stnd_dev = sp.run(['./ARM/SquareRoot'], input=f'{str(variance)}\n', text=True, capture_output=True).stdout
+        sqaverage = int(sqaverage)
+        average = int(average)
+        variance = sp.run(['./ARM/variance', f'{sqaverage}*{average}$'], text=True, capture_output=True).stdout
+        variance = int(variance)
+        stnd_dev = sp.run(['./ARM/SquareRoot'], input=f'{variance}\n', text=True, capture_output=True).stdout
         return round(float(str(stnd_dev).replace('\x00', '')), 2)
 
     def get_max(self, variable):
@@ -81,6 +84,3 @@ class Calculator:
     def get_counter(self, variable):
         result = sp.run(['./ARM/counter', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
         return int(result.stdout)
-    
-    def get_air_quality(self):
-        pass
