@@ -1,7 +1,7 @@
 .global _start
 
 .data
-input:  .space 4            // Espacio para el número de entrada (3 dígitos + null terminator)
+input:  .space 12            // Espacio para el número de entrada (3 dígitos + null terminator)
 buffer: .space 32           // Espacio para la salida del número con formato
 
 .text
@@ -9,7 +9,7 @@ _start:
     // Leer número de la entrada estándar (stdin)
     mov x0, 0                  // stdin (descriptor de archivo 0)
     ldr x1, =input             // buffer para almacenar el número leído
-    mov x2, 4                  // leer hasta 4 bytes (3 dígitos + null terminator)
+    mov x2, 12                  // leer hasta 4 bytes (3 dígitos + null terminator)
     mov x8, 63                 // syscall: read
     svc 0
 

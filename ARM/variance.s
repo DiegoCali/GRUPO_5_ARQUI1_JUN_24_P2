@@ -3,7 +3,6 @@
 .bss 
 arg1: .space 32         // space for 32 caracters
 output: .skip 12        // space for 12 bytes
-buffer: .skip 1024      // space for 1024 bytes
 
 .data
 newline: .asciz "\n"    // new line
@@ -29,40 +28,20 @@ end_loop_argv:
     mov w0, 0           // add eof
     strb w0, [x1, x2]   // store byte
 
-open_file:
-    // open file
-    mov x0, -100        // open
-    ldr x1, =arg1          // filename address
-    mov x2, 0           // O_RDONLY 
-    mov x8, 56          // openat
-    svc #0              // syscall
-    mov x9, x0          // store file descriptor
-
-    // read file
-    mov x0, x9          // file descriptor
-    ldr x1, =buffer     // buffer address
-    mov x2, 1024        // size address
-    mov x8, 63          // read
-    svc 0               // syscall
-
-    // close file
-    mov x0, x9          // file descriptor
-    mov x8, 57          // close
-    svc 0               // syscall
-
 set_variables:
-    ldr x1, =buffer     // buffer address
+    ldr x1, =arg1        // buffer address
     mov x3, 0           // number size = 0
     mov x4, 10          // base number 
-    mov x5, 0           // sum
-    mov x6, 0           // counter               
+    mov x5, 0           // num1
+    mov x6, 0           // num2 
+    mov x7, 0           // counter              
 
     //casting number
 loop:
     ldrb w2, [x1]       // load byte
     cmp w2, 36          // if $
     beq convert         // goto convert
-    cmp w2, 10          // if \n
+    cmp w2, 42          // if *
     beq skip_loop       // goto skip_loop
     sub w2, w2, 48      // convert to int
     uxtb x2, w2         // convert to 64 bit
@@ -73,14 +52,25 @@ loop:
 
     // skip loop
 skip_loop:
-    add x6, x6, 1       // increment counter
+    add x7, x7, 1       // increment counter
+    cmp X7, 1
+    beq first_num
+    b loop              // goto loop
+
+first_num:
     add x1, x1, 1       // increment address
-    add x5, x5, x3      // add to sum
+    mov x5, x3
     mov x3, 0           // reset number
     b loop              // goto loop
 
 convert:
-    udiv x5, x5, x6     // calculate average
+    // second num
+    add x1, x1, 1       // increment address
+    mov x6, x3          // second num
+    mov x3, 0           // reset number
+    // variance
+    mul x6, x6, x6      // second squared
+    sub x5, x5, x6      // subtract
     ldr x1, =output     // output address
     mov x2, x5          // number to convert
     mov x3, 10          // base number
