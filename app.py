@@ -1,17 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from Climate import Climate
+
+new_climate = Climate()
+new_climate.read_climate()
 
 app = Flask(__name__)
 CORS(app)
 
-data ={
-    'promedio': 25,
-    'mediana': 3,
-    'desviacion_estandar': 52,
-    'maximo': 61,
-    'minimo': 25,
-    'moda': 320,
-    'contador': 25
+data = {
+    'promedio': -1,
+    'mediana': -1,
+    'desviacion_estandar': -1,
+    'maximo': -1,
+    'minimo': -1,
+    'moda': -1,
+    'contador': -1
 }
 
 @app.route('/Temperatura')
