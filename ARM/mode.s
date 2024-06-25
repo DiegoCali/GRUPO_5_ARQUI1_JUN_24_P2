@@ -2,7 +2,7 @@
 
 .data
 filename:
-    .asciz "nums.txt"
+    .asciz "DB/temp.txt"
 
 .bss
 buffer:
