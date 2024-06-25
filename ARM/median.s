@@ -1,8 +1,9 @@
 .global _start
 
 .bss 
+buffer: .skip 1024 // space for 1024 bytes
 output: .skip 12        // space for 12 bytes
-buffer: .skip 1024     // space for 1024 bytes
+
 
 .data
 file: .asciz "DB/sorted.txt"
@@ -10,7 +11,6 @@ file: .asciz "DB/sorted.txt"
 .text
 _start:
 
-open_file:
     mov x0, -100
     ldr x1, =file
     mov x2, 0
@@ -46,7 +46,6 @@ count_loop:
     mov x0, x9                 // cantidad de numeros
     and x0, x0, 1              // verificar si es impar
     //el retorno de and es 1 si es impar y 0 si es par, recordar que Z solo se activa si el resultado es 0
-    //beq even_number           // si es par
     cbz x0, even_number      // Si el bit menos significativo es 0, es par.
 
 odd_number:
@@ -55,6 +54,7 @@ odd_number:
     udiv x0, x2, x3             // dividir entre 2 (posicion del numero buscado)
     //------------------variables de entrada-------------------
     //x0 contiene la posicion del numero buscado
+    add x0, x0, 1              // sumar 1 para obtener la posicion del numero buscado
     //x1 contiene la direccion del buffer
     mov x2, 0                  // posicion de caracter
     mov x3, 0                  // lector de caracter
@@ -76,7 +76,7 @@ odd_number:
     ldr x1, =output            // dirección del buffer de salida
     bl itoa                   // convertir entero a cadena
 
-    // Imprimir el resultado
+    //Imprimir el resultado
     mov x0, 1                  // stdout (descriptor de archivo 1)
     ldr x1, =output            // dirección del buffer de salida
     mov x2, 32                 // longitud del mensaje (ajustar según sea necesario)
@@ -228,6 +228,5 @@ set_point:
 
 _end:
     // Salir del programa
-    mov x0, 0
     mov x8, 93                 // syscall: exit
     svc 0
