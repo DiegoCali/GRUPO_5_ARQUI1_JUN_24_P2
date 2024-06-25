@@ -31,7 +31,7 @@ def get_press():
 
 @app.route('/CalidadAire')
 def get_air():
-    return jsonify({'contador_bueno': 90, 'contador_malo': 10})
+    return jsonify(calc.get_air())
 
 if __name__ == '__main__':
     app.run()

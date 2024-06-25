@@ -24,6 +24,21 @@ class Calculator:
             'contador': self.get_counter(variable)
         }
         return self.data
+    
+    def get_air(self):
+        air_data = {
+            'contador_bueno': self.good_air(),
+            'contador_malo': self.bad_air()
+        }
+        return air_data
+
+    def good_air(self):
+        result = sp.run(['./ARM/High-quality', 'ARM/DB/air.txt'], text=True, capture_output=True)
+        return int(result.stdout)
+
+    def bad_air(self):
+        result = sp.run(['./ARM/Low-quality', 'ARM/DB/air.txt'], text=True, capture_output=True)
+        return int(result.stdout)
 
     def get_average(self, variable):
         result = sp.run(['./ARM/average', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
@@ -42,14 +57,14 @@ class Calculator:
             f.write(str(data) + '\n')
         f.close()
         result = sp.run(['./ARM/median'], text=True, capture_output=True)
-        return int(str(result.stdout).replace('\x00', ''))
+        return round(float(str(result.stdout).replace('\x00', '')), 2)
     
     def get_stnd_dev(self, variable):
         sqaverage = sp.run(['./ARM/sqaverage', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
         average = sp.run(['./ARM/average', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
         variance = int(sqaverage) - int(average)**2
         stnd_dev = sp.run(['./ARM/SquareRoot'], input=f'{str(variance)}\n', text=True, capture_output=True).stdout
-        return stnd_dev 
+        return round(float(str(stnd_dev).replace('\x00', '')), 2)
 
     def get_max(self, variable):
         result = sp.run(['./ARM/max', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
