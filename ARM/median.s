@@ -6,7 +6,7 @@ output: .skip 12        // space for 12 bytes
 
 
 .data
-file: .asciz "DB/sorted.txt"
+file: .asciz "ARM/DB/sorted.txt"
 
 .text
 _start:
@@ -228,5 +228,6 @@ set_point:
 
 _end:
     // Salir del programa
+    mov x0, 0
     mov x8, 93                 // syscall: exit
     svc 0

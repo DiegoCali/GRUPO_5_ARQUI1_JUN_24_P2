@@ -30,8 +30,19 @@ class Calculator:
         return int(result.stdout)
     
     def get_median(self, variable):
-        result = sp.run(['./ARM/median', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
-        return int(result.stdout)
+        f = open(f'ARM/DB/{variable}.txt', 'r')
+        string = f.read()
+        f.close()
+        array = string.split()
+        array.pop()
+        array.sort()
+        array.append('$')
+        f = open('ARM/DB/sorted.txt', 'w')
+        for data in array:
+            f.write(str(data) + '\n')
+        f.close()
+        result = sp.run(['./ARM/median'], text=True, capture_output=True)
+        return int(str(result.stdout).replace('\x00', ''))
     
     def get_stnd_dev(self, variable):
         sqaverage = sp.run(['./ARM/sqaverage', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
