@@ -1,16 +1,33 @@
 .global _start
 
 .bss 
-arg1: .space 32         // space for 32 caracters
 output: .skip 12        // space for 12 bytes
-//buffer: .space 1024 // space for 1024 bytes
+buffer: .skip 1024     // space for 1024 bytes
 
 .data
-buffer: .asciz "1\n2\n3\n4\n5\n6\n7\n8\n9\n$" // space for 1024 bytes
+file: .asciz "DB/sorted.txt"
 
 .text
 _start:
-    
+
+open_file:
+    mov x0, -100
+    ldr x1, =file
+    mov x2, 0
+    mov x8, 56
+    svc 0
+    mov x9, x0 
+
+    mov x0, x9
+    ldr x1, =buffer
+    mov x2, 1024
+    mov x8, 63
+    svc 0
+
+    mov x0, x9
+    mov x8, 57
+    svc 0
+
     ldr x1, =buffer     // buffer address
     mov x2, 0           // O_RDONLY
     mov x9, 0           // counter loop
@@ -129,8 +146,6 @@ even_number:
     svc 0
     b _end
 
-
-
 search_position: //(x1=buffer, x2=posicion[se altera], x3=0)
     ldrb w3, [x1, x2]          // cargar el siguiente byte del buffer y avanzar
     add x2, x2, 1              // avanzar al siguiente byte
@@ -211,10 +226,8 @@ set_point:
     cbnz x4, itoa_loop  // Repetir si num != 0
     ret
 
-
-
-
 _end:
     // Salir del programa
+    mov x0, 0
     mov x8, 93                 // syscall: exit
     svc 0
