@@ -1,24 +1,39 @@
 .global _start
 
+.bss 
+arg1: .space 32         // space for 32 characters
+output: .skip 12        // space for 12 bytes
+buffer: .skip 1024      // space for 1024 bytes
+numbers: .skip 1024     // space for storing numbers
+
 .data
-filename:
-    .asciz "nums.txt"
-
-.bss
-buffer:
-    .skip 1024
-
-numbers:
-    .skip 1024
-
-output:
-    .skip 12
+newline: .asciz "\n"    // new line
 
 .text
 _start:
+    //argv[1] address
+    ldr x0, [sp, 16]    // load address of argv[1]
+    ldr x1, =arg1       // load address of arg1
+    mov x2, 0           // initialize counter
+
+    // copy argv[1] to arg1
+loop_argv:
+    ldrb w3, [x0, x2]   // load byte
+    cmp w3, 0           // if null
+    beq end_loop_argv   // goto end_loop_argv
+    strb w3, [x1, x2]   // store byte
+    add x2, x2, 1       // increment counter
+    b loop_argv         // goto loop_argv
+
+    // add eof
+end_loop_argv:
+    mov w0, 0           // add eof
+    strb w0, [x1, x2]   // store byte
+
+open_file:
     // open file
     mov x0, -100        // open
-    ldr x1, =filename   // filename address
+    ldr x1, =arg1       // filename address
     mov x2, 0           // O_RDONLY 
     mov x8, 56          // openat
     svc #0              // syscall
@@ -36,6 +51,7 @@ _start:
     mov x8, 57          // close
     svc 0               // syscall
 
+set_variables:
     ldr x1, =buffer     // buffer address
     ldr x10, =numbers   // numbers array address
     mov x3, 0           // number size = 0
@@ -49,6 +65,8 @@ loop:
     beq find_mode       // goto find_mode
     cmp w2, 10          // if \n
     beq store_number    // goto store_number
+    cmp w2, 0           // if null terminator (end of buffer)
+    beq find_mode       // goto find_mode
     sub w2, w2, 48      // convert to int
     uxtb x2, w2         // convert to 64 bit
     mul x3, x3, x4      // multiply by base
@@ -111,38 +129,41 @@ print_mode:
     mov x4, 0           // number size = 0
 
 get_size:
-    udiv x5, x2, x3     // remove last digit
+    mov x5, x2          // copy of number
+    mov x4, 0           // reset number size
+get_digit_size:
+    udiv x5, x5, x3     // divide number by base
     add x4, x4, 1       // increment size
     cmp x5, 0           // if number != 0
-    bne get_size        // goto get_size
+    bne get_digit_size  // continue if not zero
 
-    add x1, x1, x4      // str addr offset
+    add x1, x1, x4      // set string address offset
     mov w6, 10          // newline ascii
     strb w6, [x1]       // store newline
     sub x1, x1, 1       // decrement offset
-    add x4, x4, 1       // str final size
+    add x4, x4, 1       // increment string final size
     mov x5, x2          // copy of number
-    mov x6, 0           // iter number = 0
+    mov x6, 0           // reset iterator
 
 get_digit:
     udiv x7, x5, x3     // remove last digit
-    msub x8, x7, x3, x5 // last digit
-    add x6, x6, 1       // increment iter
+    msub x8, x7, x3, x5 // calculate last digit
+    add x6, x6, 1       // increment iterator
     add w8, w8, 48      // convert to ASCII
     strb w8, [x1]       // store last digit
     sub x1, x1, 1       // decrement offset
-    mov x5, x7          // number remain
+    mov x5, x7          // update number
     cmp x5, 0           // if number != 0
-    bne get_digit       // goto get_digit
+    bne get_digit       // continue if not zero
 
 print:
     mov x0, 1           // stdout
-    ldr x1, =output     // load str
-    mov x2, x4          // str size
-    mov x8, 64          // write syscall_num
+    ldr x1, =output     // load string address
+    mov x2, x4          // string size
+    mov x8, 64          // write syscall number
     svc 0               // syscall
 
 end:
     mov x0, 0           // exit code
-    mov x8, 93          // exit syscall_num
+    mov x8, 93          // exit syscall number
     svc 0               // syscall
