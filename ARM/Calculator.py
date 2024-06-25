@@ -14,35 +14,47 @@ class Calculator:
         }
 
     def get_data(self, variable):
-        pass
+        self.data = {
+            'promedio': self.get_average(variable),
+            'mediana': self.get_median(variable),
+            'desviacion_estandar': self.get_stnd_dev(variable),
+            'maximo': self.get_max(variable),
+            'minimo': self.get_min(variable),
+            'moda': self.get_mode(variable),
+            'contador': self.get_counter(variable)
+        }
+        return self.data
 
     def get_average(self, variable):
-        result = sp.run([f'./average DB/{variable}.txt'], text=True, capture_output=True)
-        return result.stdout
+        result = sp.run(['./ARM/average', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
+        return int(result.stdout)
     
     def get_median(self, variable):
-        result = sp.run([f'./median DB/{variable}.txt'], text=True, capture_output=True)
-        return result.stdout
+        result = sp.run(['./ARM/median', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
+        return int(result.stdout)
     
     def get_stnd_dev(self, variable):
-        sqaverage = sp.run([f'./sqaverage DB/{variable}.txt'], text=True, capture_output=True).stdout
-        average = sp.run([f'./sqaverage DB/{variable}.txt'], text=True, capture_output=True).stdout
-        variance = int(sqaverage) - int(average*average)
-        stnd_dev = sp.run([f'./SquareRoot DB/{str(variance)}.txt'], text=True, capture_output=True).stdout
-        return stnd_dev
+        sqaverage = sp.run(['./ARM/sqaverage', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
+        average = sp.run(['./ARM/average', f'ARM/DB/{variable}.txt'], text=True, capture_output=True).stdout
+        variance = int(sqaverage) - int(average)**2
+        stnd_dev = sp.run(['./ARM/SquareRoot'], input=f'{str(variance)}\n', text=True, capture_output=True).stdout
+        return stnd_dev 
 
     def get_max(self, variable):
-        result = sp.run([f'./max DB/{variable}.txt'], text=True, capture_output=True)
-        return result.stdout
+        result = sp.run(['./ARM/max', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
+        return int(result.stdout)
 
     def get_min(self, variable):
-        result = sp.run([f'./mini DB/{variable}.txt'], text=True, capture_output=True)
-        return result.stdout
+        result = sp.run(['./ARM/mini', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
+        return int(result.stdout)
 
     def get_mode(self, variable):
-        result = sp.run([f'./mode DB/{variable}.txt'], text=True, capture_output=True)
-        return result.stdout
+        result = sp.run(['./ARM/mode', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
+        return int(result.stdout)
 
     def get_counter(self, variable):
-        result = sp.run([f'./counter DB/{variable}.txt'], text=True, capture_output=True)
-        return result.stdout
+        result = sp.run(['./ARM/counter', f'ARM/DB/{variable}.txt'], text=True, capture_output=True)
+        return int(result.stdout)
+    
+    def get_air_quality(self):
+        pass
