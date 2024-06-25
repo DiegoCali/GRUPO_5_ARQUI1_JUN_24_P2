@@ -16,10 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from fronted.views import home  # Asegúrate de que esta línea sea correcta
-from fronted.views import obtener_datos  # Asegúrate de que esta línea sea correcta
+from fronted.views import home  
+from fronted.views import obtener_datos  
+from fronted.views import obtener_datosGrafica  
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home'),  # Asegúrate de usar name='home' si quieres referenciar esta URL en otras partes de tu código
-    path('obtener_datos/', obtener_datos, name='obtener_datos'),  ]
+    path('', home, name='home'), 
+    path('obtener_datos/', obtener_datos, name='obtener_datos'),  
+    path('obtener_datosGrafica/', obtener_datosGrafica, name='obtener_datosGrafica'),
+    ]

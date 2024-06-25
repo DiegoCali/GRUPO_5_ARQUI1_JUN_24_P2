@@ -30,3 +30,8 @@ def obtener_datos(request):
         }
     
     return JsonResponse(datos)
+
+def obtener_datosGrafica(rewuest):
+    response = requests.get('http://127.0.0.1:5000/CalidadAire')
+    print(response.json())
+    return JsonResponse(response.json())
