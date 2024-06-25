@@ -50,6 +50,8 @@ class Climate:
             except:
                 self.temperature = self.temperature
                 self.humidity = self.humidity
+            self.save_data('temp', self.temperature)
+            self.save_data('humidity', self.humidity)
             if GPIO.input(light):
                 self.daylight = False
             else:
@@ -58,17 +60,32 @@ class Climate:
                 self.pressure = round(self.bmp_280.get_pressure())
             except:
                 self.pressure = self.pressure
+            self.save_data('pressure', self.pressure)
             try:
                 self.bus.write_byte(pcf8581, wind)
                 self.air_condition = self.bus.read_byte(pcf8581)
             except:
                 self.air_condition = self.air_condition
+            self.save_data('air', self.air_condition)
             try:
                 self.bus.write_byte(pcf8581, encoder)
                 self.air_velocity = self.bus.read_byte(pcf8581)
             except:
                 self.air_velocity = self.air_velocity
+            self.save_data('wind', self.air_velocity)
             sleep(10)
+
+    def save_data(self, variable, value):
+        f = open(f'ARM/DB/{variable}.txt', 'r')
+        data = f.read()
+        array_data = data.split()
+        if len(array_data) != 0:
+            array_data.pop()
+        array_data.append(str(value))
+        array_data.append('$')
+        f = open(f'ARM/DB/{variable}.txt', 'w')
+        for d in array_data:
+            f.write(str(d) + '\n')
 
     def read_climate(self):
         th1 = threading.Thread(target=self.read_sensor, args=())
