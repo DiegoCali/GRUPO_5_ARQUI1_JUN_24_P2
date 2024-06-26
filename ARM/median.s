@@ -6,7 +6,8 @@ output: .skip 12        // space for 12 bytes
 
 
 .data
-file: .asciz "ARM/DB/sorted.txt"
+//file: .asciz "DB/sorted.txt"
+file: .asciz "sorted.txt"
 
 .text
 _start:
@@ -43,8 +44,8 @@ count_loop:
 
     //x9 contiene ahora la cantidad de numeros que hay cargados
     mov x2, x9                 // cantidad de numeros
-    mov x0, x9                 // cantidad de numeros
-    and x0, x0, 1              // verificar si es impar
+    mov x7, x9                 // cantidad de numeros
+    and x0, x9, 1              // verificar si es impar
     //el retorno de and es 1 si es impar y 0 si es par, recordar que Z solo se activa si el resultado es 0
     cbz x0, even_number      // Si el bit menos significativo es 0, es par.
 
@@ -61,6 +62,9 @@ odd_number:
     mov x9, 1                  // contador de numeros
     bl search_position          // buscar la posicion del numero
 
+    cmp x7, #1                  // comparar si solo hay un numero
+    mov x8, #0
+    csel x0, x8, x0, eq         // si solo hay un numero la mediana es el mismo numero
     //------------------variables de entrada-------------------
     //x0 no es relevante pero retornara el valor buscado
     //x1 contiene la direccion del buffer
@@ -96,6 +100,10 @@ even_number:
     mov x3, 0                  // lector de caracter
     mov x9, 1                  // contador de numeros
     bl search_position          // buscar la posicion del numero
+
+    cmp x7, #2                  // comparar si solo hay un numero
+    mov x8, #0
+    csel x0, x8, x0, eq         // si solo hay un numero la mediana es el mismo numero
 
     //------------------variables de entrada-------------------
     //x0 no es relevante pero retornara el valor buscado
@@ -228,6 +236,5 @@ set_point:
 
 _end:
     // Salir del programa
-    mov x0, 0
     mov x8, 93                 // syscall: exit
     svc 0
