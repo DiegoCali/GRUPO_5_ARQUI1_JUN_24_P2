@@ -209,6 +209,36 @@ setInterval(fetchDataAndUpdateCharts, 5000);
 fetchDataAndUpdateCharts();
 
 
+function updateNightOrSunImage() {
+  $.ajax({
+    url: '/nightOrSun/', // Api
+    method: 'GET',
+    success: function (data) {
+      console.log('Data fetched', data);
+
+      let nightOrSun = data.nightOrSun; // Suponiendo que `data.nightOrSun` es verdadero o falso
+
+      if (nightOrSun) {
+        $('#nightSunImage').attr('src', "{% static 'assets/img/elements/sun.png' %}"); // URL de la imagen de día
+      } else {
+        $('#nightSunImage').attr('src', "{% static 'assets/img/elements/night.png' %}"); // URL de la imagen de noche
+      }
+    },
+    error: function (error) {
+      console.error('Error fetching data', error);
+    }
+  });
+}
+
+// Llama a updateNightOrSunImage cada 5 minutos (300000 ms)
+setInterval(updateNightOrSunImage, 5000);
+
+// Llama a updateNightOrSunImage inmediatamente cuando se carga la página
+updateNightOrSunImage();
+
+
+
+
 'use strict';
 
 // (function () {

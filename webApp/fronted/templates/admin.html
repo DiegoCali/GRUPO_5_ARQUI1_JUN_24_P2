@@ -288,7 +288,7 @@
                         <div class="card-body">
                           <h5 class="card-title text-primary">Bienvenido Bruce Castillo! 👋</h5>
                           <p class="mb-4">
-                            Actualmente el nivel del oxigeno en la habitacion es del 20% y la temperatura es de 25°C
+                            Grupo 5 - Laboratorio de arquitectura de computadores y ensambladores 1 seccion A
                           </p>
 
                           <a href="javascript:;" class="btn btn-sm btn-outline-primary">Ver mas</a>
@@ -320,7 +320,13 @@
                       
                         <div class="col-lg-12 col-md-12 col-6 mb-4">
                           <br>
-                          <div id="growthChart"></div>
+                          <div id="nightSun">
+                            
+                            <img src="{% static 'assets/img/elements/night.png' %}"  alt=""
+                            style="object-fit: cover; width: 92%;"  
+                            id="nightSunImage"
+                            >
+                            </div>
                           
   
                           
@@ -518,6 +524,9 @@
           
           // Disparar el evento change inicialmente para cargar los datos de 'Temperatura'
           $('#select2Basic').trigger('change');
+
+
+          
       });
   </script>
   </body>
