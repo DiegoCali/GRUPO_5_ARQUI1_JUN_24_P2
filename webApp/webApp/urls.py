@@ -19,10 +19,12 @@ from django.urls import path
 from fronted.views import home  
 from fronted.views import obtener_datos  
 from fronted.views import obtener_datosGrafica  
+from fronted.views import nightOrSun
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'), 
     path('obtener_datos/', obtener_datos, name='obtener_datos'),  
     path('obtener_datosGrafica/', obtener_datosGrafica, name='obtener_datosGrafica'),
+    path('nightOrSun/', nightOrSun, name='nightOrSun'),
     ]
