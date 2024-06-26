@@ -181,16 +181,19 @@ function fetchDataAndUpdateCharts() {
       nAirBad = data.contador_malo;
       nAirGood = data.contador_bueno;
 
+      let total = nAirBad + nAirGood
+      let percentage = nAirGood/total*100
+
       console.log('nWind', nAirBad);
       console.log('nAirGood', nAirGood);
 
       // Actualiza las opciones de las gráficas existentes
-      growthChart.updateOptions({
-        series: [nAirBad]
-      });
+      //growthChart.updateOptions({
+        //series: [nAirBad]
+      //});
 
       growthChart2.updateOptions({
-        series: [nAirGood]
+        series: [percentage]
       });
 
       // Otros gráficos y actualizaciones si es necesario...
