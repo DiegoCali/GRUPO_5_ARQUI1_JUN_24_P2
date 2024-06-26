@@ -4,7 +4,7 @@
 
 // Variables para almacenar los datos iniciales
 let nAirBad = 20;
-let nAirGood = 20;
+let nAirGood = 100;
 
 // Opciones de configuración comunes
 let cardColor, headingColor, axisColor, shadeColor, borderColor;
@@ -203,7 +203,7 @@ function fetchDataAndUpdateCharts() {
 }
 
 // Llama a fetchDataAndUpdateCharts cada 5 minutos (300000 ms)
-setInterval(fetchDataAndUpdateCharts, 5000);
+setInterval(fetchDataAndUpdateCharts, 2500);
 
 // Llama a fetchDataAndUpdateCharts por primera vez para iniciar las gráficas con los datos actuales
 fetchDataAndUpdateCharts();
@@ -219,9 +219,9 @@ function updateNightOrSunImage() {
       let nightOrSun = data.nightOrSun; // Suponiendo que `data.nightOrSun` es verdadero o falso
 
       if (nightOrSun) {
-        $('#nightSunImage').attr('src', "{% static 'assets/img/elements/sun.png' %}"); // URL de la imagen de día
+        $('#nightSunImage').attr('src', '/static/assets/img/elements/sun.png'); // URL de la imagen de día
       } else {
-        $('#nightSunImage').attr('src', "{% static 'assets/img/elements/night.png' %}"); // URL de la imagen de noche
+        $('#nightSunImage').attr('src', '/static/assets/img/elements/night.png'); // URL de la imagen de noche
       }
     },
     error: function (error) {
@@ -231,7 +231,7 @@ function updateNightOrSunImage() {
 }
 
 // Llama a updateNightOrSunImage cada 5 minutos (300000 ms)
-setInterval(updateNightOrSunImage, 5000);
+setInterval(updateNightOrSunImage, 2500);
 
 // Llama a updateNightOrSunImage inmediatamente cuando se carga la página
 updateNightOrSunImage();

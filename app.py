@@ -33,5 +33,12 @@ def get_press():
 def get_air():
     return jsonify(calc.get_air())
 
+@app.route('/NightOrSun')
+def daylight():
+    response = {
+        'nightOrSun': new_climate.daylight
+    }
+    return jsonify(response)
+
 if __name__ == '__main__':
     app.run()

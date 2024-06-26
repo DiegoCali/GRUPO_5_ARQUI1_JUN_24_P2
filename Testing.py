@@ -2,4 +2,4 @@ from ARM.Calculator import Calculator
 
 calc = Calculator()
 
-print(calc.get_data('pressure'))
+print(calc.get_data('temp'))
